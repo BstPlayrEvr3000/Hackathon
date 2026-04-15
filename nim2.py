@@ -1,4 +1,5 @@
 import sys
+import turtle
 
 # Note to debuggers: ^ means XOR function e.g. 3^5=11_2^101_2=110_2=6
 
@@ -12,6 +13,33 @@ except ValueError:
 piles=[] #keeping track of all heaps
 for i in enumerate(numbers):
     piles.append(int(i[1]))
+##### add-on
+# uses turtle to make pictures of chips stack
+def makechips(t, n):
+    for i in range(n):
+        t.pendown()
+        t.begin_fill()
+        t.circle(40)
+        t.end_fill()
+        t.penup()
+        t.left(90)
+        t.forward(15)
+        t.right(90)
+    for i in range(4):
+        t.undo()   
+turtles = []
+for i in range(len(piles)):
+    turtles.append(turtle.Turtle())
+    turtles[i].speed(0)
+    turtles[i].penup()
+    turtles[i].goto(50,20)
+    turtles[i].fillcolor("green")
+    turtles[i].goto(-150+100*i,-200)
+    makechips(turtles[i], piles[i])
+def takeChips(n, p):
+    for i in range(8 * int(n)):
+        turtles[int(p)].undo()
+####
 nimsum=0
 for i in piles:
     nimsum=nimsum^i
@@ -45,6 +73,7 @@ if player_turn=='A':
         pile,amount=sys.stdin.readline()[:-1].split(' ')
         pile=int(pile)-1
         amount=int(amount)
+    takeChips(amount, pile) # takes the amount of chips taken to edit stacks
     piles[pile]-=amount
 while True:
     print('Amount left for bot:')
@@ -54,6 +83,7 @@ while True:
     piles[bot_pile]-=bot_amount
     print('the piles are')
     print(piles)
+    takeChips(bot_amount, bot_pile) # takes the amount of chips taken to edit stacks
     if sum(piles)==0:
         break
     print('enter the pile followed by a space then the amount you take')
@@ -66,4 +96,5 @@ while True:
         pile=int(pile)-1
         amount=int(amount)
     piles[pile]-=amount
+    takeChips(amount, pile) # takes the amount of chips taken to edit stacks
 print('You lose!...its rigged anyway')
