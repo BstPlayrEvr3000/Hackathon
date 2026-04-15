@@ -1,9 +1,9 @@
 import sys
 
 # Note to debuggers: ^ means XOR function e.g. 3^5=11_2^101_2=110_2=6
-
-print('enter a set of numbers, seperated by spaces')
-print('choose a heap, take a positive amount from it. last player to move wins')
+try:
+    print('enter a set of numbers, seperated by spaces')
+    print('choose a heap, take a positive amount from it. last player to move wins')
 except Exception():
     print("invalid format, try again")
 numbers=sys.stdin.readline()[:-1].split(' ')
