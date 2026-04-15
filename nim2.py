@@ -45,7 +45,7 @@ if player_turn=='A':
     piles[pile]-=amount
 while sum(piles)!=0:
     bot_pile, bot_amount=play_game(piles)
-    print('the bot has taken: '+str(bot_amount)+' from pile '+str(bot_pile)
+    print('the bot has taken: '+str(bot_amount)+' from pile '+str(bot_pile))
     piles[bot_pile]-=bot_amount
     print('the piles are')
     print(piles)
