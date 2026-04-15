@@ -5,7 +5,7 @@ import sys
 try:
     print('enter a set of numbers, seperated by spaces')
     print('choose a heap, take a positive amount from it. last player to move wins')
-    numbers=sys.stdin.readline()[:-1].split(' ')
+    numbers=sys.stdin.readline()[:-1].split()
 except ValueError:
     print("invalid format, try again")
 
