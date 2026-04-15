@@ -295,14 +295,8 @@ function checkGameOver() {
             gameOverScreen.offsetHeight;
             gameOverScreen.classList.add('active');
             
-            // Last player to move wins (so the turn that just happened, which means the currentTurn variable points to the loser now)
-            // Wait, actually:
-            // if currentTurn just executed a move, and sum is 0, they took the last stone.
-            // Oh, the checkGameOver is called right after the array is mutated.
-            // So if `currentTurn === 'player'`, that means the player just moved and took the last stone!
-            // Wait, inside executePlayerMove(), `heaps` is mutated, then `checkGameOver()` is called *before* changing `currentTurn`.
-            // So if `currentTurn === 'player'`, player just won.
-            
+            // Last player to move wins
+            // currentTurn tells who was the lastPlayer
             if (currentTurn === 'player') {
                 winnerText.textContent = "You Win!";
                 winnerText.className = 'glow-text turn-player';
