@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nim Game</title>
+    <meta name="description" content="A graphical implementation of the classic game of Nim.">
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1 class="glow-text">The Game of Nim</h1>
+        </header>
+
+        <main>
+            <!-- Setup Screen -->
+            <section id="setup-screen" class="glass-panel active">
+                <h2>Configure the Game</h2>
+                <p>Enter the initial sizes for each heap, separated by spaces (e.g. <code>3 4 5</code>). The game
+                    automatically decides who goes first based on the optimal Nim-sum strategy.</p>
+                <div class="input-group">
+                    <input type="text" id="heap-input" value="" placeholder="e.g. 1 3 5 7" />
+                    <button id="start-btn" class="primary-btn">Start Game</button>
+                </div>
+                <div id="setup-error" class="error-msg"></div>
+            </section>
+
+            <!-- Game Space -->
+            <section id="game-screen" class="glass-panel hidden">
+                <div id="game-info">
+                    <span id="turn-indicator" class="turn-indicator">Your Turn!</span>
+                </div>
+                <div id="heaps-container">
+                    <!-- Heaps will be generated here -->
+                </div>
+                <div id="controls-container" class="hidden">
+                    <div class="move-controls">
+                        <span id="selection-info">Select a heap to take stones.</span>
+                        <div class="input-wrapper">
+                            <input type="number" id="take-amount-input" min="1" placeholder="Qty" />
+                            <button id="confirm-btn" class="primary-btn disabled" disabled>Confirm Move</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Game Over Screen -->
+            <section id="game-over-screen" class="glass-panel hidden">
+                <h2 id="winner-text" class="glow-text">Game Over</h2>
+                <p id="winner-subtext"></p>
+                <button id="restart-btn" class="primary-btn">Play Again</button>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
