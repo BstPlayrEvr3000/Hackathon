@@ -23,15 +23,23 @@
             <!-- Setup Screen -->
             <section id="setup-screen" class="glass-panel active">
                 <h2>Configure the Game</h2>
-                <p>Enter the initial sizes for each heap, separated by spaces (e.g. <code>3 4 5</code>). The game
-                    automatically decides who goes first based on the optimal Nim-sum strategy.</p>
-            
-                <div class="credits-box">
-                    <h3>Project Credits</h3>
-                    <p><strong>Original Nim engine / Python implementation:</strong> Kennan</p>
-                    <p><strong>Godot prototype / executable version:</strong> Kennan</p>
-                    <p><strong>Web adaptation (HTML / JS / CSS):</strong> Damian</p>
+                <p>Enter the initial sizes for each heap, separated by spaces (e.g. <code>3 4 5</code>). The game automatically decides who goes first based on the optimal Nim-sum strategy.</p>
+
+                <div class="attribution-box">
+                  <div class="attribution-title">Project Attribution</div>
+                  <div class="attribution-grid">
+                    <div class="attr-role">Original Nim engine / Python implementation</div>
+                    <div class="attr-name">Kennan</div>
+                
+                    <div class="attr-role">Godot prototype / executable version</div>
+                    <div class="attr-name">Kennan</div>
+                
+                    <div class="attr-role">Web adaptation (HTML / JS / CSS)</div>
+                    <div class="attr-name">Damian</div>
+                  </div>
                 </div>
+                
+                <div class="input-group">
             
                 <div class="input-group">
                     <input type="text" id="heap-input" value="" placeholder="e.g. 1 3 5 7" />
