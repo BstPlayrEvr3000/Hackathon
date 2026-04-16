@@ -306,14 +306,13 @@ function botMove() {
             }
         }
     } else {
-        // Losing position, just take 1 from the first available heap
-        for (let i = 0; i < heaps.length; i++) {
-            if (heaps[i] > 0) {
-                chosenHeap = i;
-                takeAmount = 1;
-                break;
-            }
-        }
+        // Losing position, just take 1 from a random available heap
+        const availableHeaps = heaps
+            .map((count, index) => count > 0 ? index : null)
+            .filter(val => val !== null);
+        
+        chosenHeap = availableHeaps[Math.floor(Math.random() * availableHeaps.length)];
+        takeAmount = 1;
     }
 
     // Visually denote bot's choice
