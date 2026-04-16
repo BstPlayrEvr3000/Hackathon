@@ -58,6 +58,16 @@ header {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
     letter-spacing: -1px;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 1.5rem auto;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 .glass-panel {
