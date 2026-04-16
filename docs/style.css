@@ -545,9 +545,8 @@ input[type="text"]:focus {
 .setup-actions {
     width: 100%;
     display: flex;
-@@ -598,53 +42,3 @@ input[type="text"]:focus {
-    outline: 2px solid white;
-    outline-offset: 2px;
+    justify-content: flex-end;
+    margin: -0.15rem 0 0.35rem 0;
 }
 .attribution-box {
     width: 100%;
