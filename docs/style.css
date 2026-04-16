@@ -555,3 +555,29 @@ input[type="text"]:focus {
         font-size: 2.5rem;
     }
 }
+.credits-box {
+    margin: 1rem auto 0.5rem auto;
+    padding: 1rem 1.25rem;
+    width: 100%;
+    max-width: 700px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+}
+
+.credits-box h3 {
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.credits-box p {
+    margin: 0.35rem 0;
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.credits-box strong {
+    color: var(--text-primary);
+}
