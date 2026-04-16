@@ -35,35 +35,37 @@
                         <div class="attr-role">Godot prototype / executable version</div>
                         <div class="attr-name">Kennan</div>
 
-                        <div class="attr-role">Web implementation and Enhancements (HTML / JS / CSS)</div>
+                        <div class="attr-role">Web implementation (HTML / JS / CSS)</div>
+                        <div class="attr-name">Damian</div>
+
+                        <div class="attr-role">Enhancements (i.e. Misere mode, beatable difficulty, Rules, etc.)</div>
                         <div class="attr-name">Damian</div>
                     </div>
-                </div>
 
-                <div class="mode-section">
-                    <p>Game Mode:</p>
-                    <div class="mode-group">
-                        <button id="mode-normal" class="toggle-btn active">Normal</button>
-                        <button id="mode-misere" class="toggle-btn">Misere</button>
+                    <div class="mode-section">
+                        <p>Game Mode:</p>
+                        <div class="mode-group">
+                            <button id="mode-normal" class="toggle-btn active">Normal</button>
+                            <button id="mode-misere" class="toggle-btn">Misere</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="difficulty-section">
+                    <div class="difficulty-section">
 
-                    <p>Select Difficulty:</p>
-                    <div class="difficulty-group">
-                        <button id="difficulty-beatable" class="toggle-btn active">Beatable</button>
-                        <button id="difficulty-unbeatable" class="toggle-btn">Unbeatable</button>
+                        <p>Select Difficulty:</p>
+                        <div class="difficulty-group">
+                            <button id="difficulty-beatable" class="toggle-btn active">Beatable</button>
+                            <button id="difficulty-unbeatable" class="toggle-btn">Unbeatable</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="input-group">
+                    <div class="input-group">
 
-                    <input type="text" id="heap-input" value="" placeholder="e.g. 1 3 5 7" />
-                    <button id="start-btn" class="primary-btn">Start Game</button>
-                </div>
+                        <input type="text" id="heap-input" value="" placeholder="e.g. 1 3 5 7" />
+                        <button id="start-btn" class="primary-btn">Start Game</button>
+                    </div>
 
-                <div id="setup-error" class="error-msg"></div>
+                    <div id="setup-error" class="error-msg"></div>
             </section>
 
             <!-- Game Space -->
@@ -159,7 +161,9 @@
                         this you can calculate the Nim-Sum of your position and figure out how many chips need to be
                         subtracted to change it to 0. If you do this every turn, victory is guaranteed!</p>
 
-                    <p>To win Misere nim you must change you strategy when their is only 1 pile greater than 1. You must make sure that you start with a nim-sum of 0 because which means that your opponent will be forced to take the last chip instead ensuring you win.</p>
+                    <p>To win Misere nim you must change you strategy when their is only 1 pile with size greater than
+                        1. You must make sure that you start with a nim-sum of 0 because that means your opponent will
+                        be forced to take the last chip, ensuring you win.</p>
                 </div>
                 <button id="close-strategy-btn" class="primary-btn">Mastered it!</button>
             </div>
