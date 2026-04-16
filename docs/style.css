@@ -555,29 +555,53 @@ input[type="text"]:focus {
         font-size: 2.5rem;
     }
 }
-.credits-box {
-    margin: 1rem auto 0.5rem auto;
-    padding: 1rem 1.25rem;
+.attribution-box {
     width: 100%;
-    max-width: 700px;
+    max-width: 720px;
+    margin: 0.25rem auto 0.75rem auto;
+    padding: 1rem 1.25rem;
     text-align: left;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
 }
 
-.credits-box h3 {
+.attribution-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-primary);
     margin-bottom: 0.75rem;
-    font-size: 1.1rem;
-    color: var(--text-primary);
 }
 
-.credits-box p {
-    margin: 0.35rem 0;
-    font-size: 1rem;
+.attribution-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.45rem 1rem;
+    align-items: start;
+}
+
+.attr-role {
     color: var(--text-secondary);
+    font-size: 0.98rem;
+    line-height: 1.45;
 }
 
-.credits-box strong {
+.attr-name {
     color: var(--text-primary);
+    font-size: 0.98rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .attribution-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .attr-name {
+        margin-bottom: 0.45rem;
+    }
 }
