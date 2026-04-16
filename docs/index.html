@@ -40,7 +40,16 @@
                     </div>
                 </div>
 
+                <div class="mode-section">
+                    <p>Game Mode:</p>
+                    <div class="mode-group">
+                        <button id="mode-normal" class="toggle-btn active">Normal</button>
+                        <button id="mode-misere" class="toggle-btn">Misere</button>
+                    </div>
+                </div>
+
                 <div class="difficulty-section">
+
                     <p>Select Difficulty:</p>
                     <div class="difficulty-group">
                         <button id="difficulty-beatable" class="toggle-btn active">Beatable</button>
@@ -67,7 +76,7 @@
                 </div>
                 <div id="controls-container" class="hidden">
                     <div class="move-controls">
-                        <span id="selection-info">Select a heap to take stones.</span>
+                        <span id="selection-info">Select a heap to take chips.</span>
                         <div class="input-wrapper">
                             <input type="number" id="take-amount-input" min="1" placeholder="Qty" />
                             <button id="confirm-btn" class="primary-btn disabled" disabled>Confirm Move</button>
@@ -95,16 +104,16 @@
                 <div class="rules-content">
                     <div class="rule-item">
                         <span class="rule-num">1</span>
-                        <p>The game starts with several heaps of stones.</p>
+                        <p>The game starts with several heaps of chips.</p>
                     </div>
                     <div class="rule-item">
                         <span class="rule-num">2</span>
-                        <p>On your turn, you can take away as many stones as you want from any <strong>one</strong>
+                        <p>On your turn, you can take away as many chips as you want from any <strong>one</strong>
                             heap.</p>
                     </div>
                     <div class="rule-item">
                         <span class="rule-num">3</span>
-                        <p>The player who removes the last stone from the board wins the game!</p>
+                        <p>The player who removes the last chip from the board wins the game!</p>
                     </div>
                 </div>
                 <button id="got-it-btn" class="primary-btn">Got it!</button>

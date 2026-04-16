@@ -2,8 +2,9 @@
 let heaps = [];
 let currentTurn = 'player'; // 'player' or 'bot'
 let selectedHeapIndex = -1;
-let selectedStonesCount = 0; // number of stones selected to remove
+let selectedChipsCount = 0; // number of chips selected to remove
 let difficulty = 'beatable'; // 'beatable' or 'unbeatable'
+let gameMode = 'normal'; // 'normal' or 'misere'
 
 // DOM Elements
 const setupScreen = document.getElementById('setup-screen');
@@ -38,6 +39,10 @@ const closeStrategyPrimaryBtn = document.getElementById('close-strategy-btn');
 const beatableBtn = document.getElementById('difficulty-beatable');
 const unbeatableBtn = document.getElementById('difficulty-unbeatable');
 
+// Mode UI
+const modeNormalBtn = document.getElementById('mode-normal');
+const modeMisereBtn = document.getElementById('mode-misere');
+
 // --- Initialization & Setup ---
 startBtn.addEventListener('click', startGame);
 confirmBtn.addEventListener('click', executePlayerMove);
@@ -62,6 +67,16 @@ function setDifficulty(level) {
     difficulty = level;
     beatableBtn.classList.toggle('active', level === 'beatable');
     unbeatableBtn.classList.toggle('active', level === 'unbeatable');
+}
+
+// Mode Selection Logic
+modeNormalBtn.addEventListener('click', () => setMode('normal'));
+modeMisereBtn.addEventListener('click', () => setMode('misere'));
+
+function setMode(mode) {
+    gameMode = mode;
+    modeNormalBtn.classList.toggle('active', mode === 'normal');
+    modeMisereBtn.classList.toggle('active', mode === 'misere');
 }
 
 // Rules Modal Logic
@@ -123,14 +138,19 @@ function startGame() {
     const nimSum = heaps.reduce((acc, val) => acc ^ val, 0);
 
     // Determine the "advantaged" player from the current position
-    // (Nim-sum != 0 is a winning position for the first player)
-    const startPositionIsWinning = (nimSum !== 0);
+    let startPositionIsWinning = (nimSum !== 0);
 
+    // In Misere Nim, the winning position is the same as normal Nim 
+    // EXCEPT when all piles are size 1.
+    const allPilesSmall = heaps.every(h => h <= 1);
+    if (gameMode === 'misere' && allPilesSmall) {
+        // For all 1s: even number of piles (nimSum 0) is a winning start
+        startPositionIsWinning = (nimSum === 0);
+    }
+    
     if (difficulty === 'beatable') {
-        // Player gets the advantage: goes first on winning, stays second on losing
         currentTurn = startPositionIsWinning ? 'player' : 'bot';
     } else {
-        // Bot gets the advantage: stays second on winning, goes first on losing
         currentTurn = startPositionIsWinning ? 'bot' : 'player';
     }
 
@@ -167,9 +187,9 @@ function updateBoard() {
         });
 
         for (let i = 0; i < count; i++) {
-            const stone = document.createElement('div');
-            stone.className = 'stone';
-            heapDiv.appendChild(stone);
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            heapDiv.appendChild(chip);
         }
 
         if (selectedHeapIndex === heapIndex) {
@@ -187,7 +207,7 @@ function selectHeap(heapIndex) {
         cancelSelection();
     } else {
         selectedHeapIndex = heapIndex;
-        selectedStonesCount = 0; // Reset input count
+        selectedChipsCount = 0; // Reset input count
         takeAmountInput.value = '';
         updateBoard();
         takeAmountInput.focus();
@@ -201,11 +221,11 @@ if (takeAmountInput) {
         if (selectedHeapIndex !== -1) {
             const max = heaps[selectedHeapIndex];
             if (val >= 1 && val <= max) {
-                selectedStonesCount = val;
+                selectedChipsCount = val;
                 confirmBtn.classList.remove('disabled');
                 confirmBtn.disabled = false;
             } else {
-                selectedStonesCount = 0;
+                selectedChipsCount = 0;
                 confirmBtn.classList.add('disabled');
                 confirmBtn.disabled = true;
             }
@@ -213,15 +233,15 @@ if (takeAmountInput) {
     });
 }
 
-function highlightStones(heapIndex, stoneIndex) {
+function highlightChips(heapIndex, chipIndex) {
     const heapsNodes = heapsContainer.children;
-    const stones = heapsNodes[heapIndex].children;
+    const chips = heapsNodes[heapIndex].children;
 
-    for (let i = 0; i < stones.length; i++) {
-        if (i <= stoneIndex) {
-            stones[i].classList.add('selected');
+    for (let i = 0; i < chips.length; i++) {
+        if (i <= chipIndex) {
+            chips[i].classList.add('selected');
         } else {
-            stones[i].classList.remove('selected');
+            chips[i].classList.remove('selected');
         }
     }
 }
@@ -229,21 +249,21 @@ function highlightStones(heapIndex, stoneIndex) {
 function clearHighlights() {
     const heapsNodes = heapsContainer.children;
     for (const heapNode of heapsNodes) {
-        for (const stone of heapNode.children) {
-            stone.classList.remove('selected');
+        for (const chip of heapNode.children) {
+            chip.classList.remove('selected');
         }
     }
 }
 
-function selectStones(heapIndex, stoneIndex) {
+function selectChips(heapIndex, chipIndex) {
     selectedHeapIndex = heapIndex;
-    selectedStonesCount = stoneIndex + 1;
+    selectedChipsCount = chipIndex + 1;
     updateBoard();
 }
 
 function cancelSelection() {
     selectedHeapIndex = -1;
-    selectedStonesCount = 0;
+    selectedChipsCount = 0;
     if (takeAmountInput) takeAmountInput.value = '';
     updateBoard();
 }
@@ -251,7 +271,7 @@ function cancelSelection() {
 function updateControls() {
     if (selectedHeapIndex !== -1) {
         controlsContainer.classList.remove('hidden');
-        selectionInfo.textContent = `Heap ${selectedHeapIndex + 1} selected. How many stones?`;
+        selectionInfo.textContent = `Heap ${selectedHeapIndex + 1} selected. How many chips?`;
         // Button state handled by input listener
     } else {
         controlsContainer.classList.add('hidden');
@@ -261,13 +281,13 @@ function updateControls() {
 }
 
 function executePlayerMove() {
-    if (selectedHeapIndex === -1 || selectedStonesCount === 0) return;
+    if (selectedHeapIndex === -1 || selectedChipsCount === 0) return;
 
     // Animate removal
-    animateRemoval(selectedHeapIndex, selectedStonesCount, () => {
-        heaps[selectedHeapIndex] -= selectedStonesCount;
+    animateRemoval(selectedHeapIndex, selectedChipsCount, () => {
+        heaps[selectedHeapIndex] -= selectedChipsCount;
         selectedHeapIndex = -1;
-        selectedStonesCount = 0;
+        selectedChipsCount = 0;
 
         if (checkGameOver()) return;
 
@@ -295,8 +315,32 @@ function botMove() {
     let chosenHeap = -1;
     let takeAmount = 0;
 
-    if (nimSum !== 0) {
-        // Find optimal move
+    // Misere Nim logic: Stage detection
+    const heapsOverOne = heaps.filter(h => h > 1).length;
+
+    if (gameMode === 'misere' && heapsOverOne <= 1) {
+        // Misere Stage 2: Only 0 or 1 heap has more than 1 chip
+        const totalPiles = heaps.filter(h => h > 0).length;
+        const bigHeapIndex = heaps.findIndex(h => h > 1);
+        
+        if (bigHeapIndex !== -1) {
+            // Case: Exactly one heap has > 1 chip. 
+            // We must leave an ODD number of piles of size 1.
+            const otherPilesCount = totalPiles - 1;
+            const desiredPiles = (otherPilesCount % 2 === 0) ? 1 : 0;
+            
+            chosenHeap = bigHeapIndex;
+            takeAmount = heaps[bigHeapIndex] - desiredPiles;
+        } else {
+            // Case: All heaps are size 1. Just take 1 from a random one.
+            const availableHeaps = heaps
+                .map((count, index) => count > 0 ? index : null)
+                .filter(val => val !== null);
+            chosenHeap = availableHeaps[Math.floor(Math.random() * availableHeaps.length)];
+            takeAmount = 1;
+        }
+    } else if (nimSum !== 0) {
+        // Standard Nim strategy (Normal Nim OR Stage 1 of Misere)
         for (let i = 0; i < heaps.length; i++) {
             const targetSize = heaps[i] ^ nimSum;
             if (targetSize < heaps[i]) {
@@ -318,7 +362,7 @@ function botMove() {
     // Visually denote bot's choice
     selectedHeapIndex = chosenHeap;
     updateBoard();
-    selectionInfo.textContent = `Bot is taking ${takeAmount} stone(s) from Heap ${chosenHeap + 1}...`;
+    selectionInfo.textContent = `Bot is taking ${takeAmount} chip(s) from Heap ${chosenHeap + 1}...`;
     controlsContainer.classList.remove('hidden');
 
     setTimeout(() => {
@@ -346,8 +390,8 @@ function updateTurnIndicator() {
 }
 
 function checkGameOver() {
-    const totalStones = heaps.reduce((sum, h) => sum + h, 0);
-    if (totalStones === 0) {
+    const totalChips = heaps.reduce((sum, h) => sum + h, 0);
+    if (totalChips === 0) {
         gameScreen.classList.remove('active');
         setTimeout(() => {
             gameScreen.classList.add('hidden');
@@ -355,23 +399,23 @@ function checkGameOver() {
             gameOverScreen.offsetHeight;
             gameOverScreen.classList.add('active');
 
-            // Last player to move wins (so the turn that just happened, which means the currentTurn variable points to the loser now)
-            // Wait, actually:
-            // if currentTurn just executed a move, and sum is 0, they took the last stone.
-            // Oh, the checkGameOver is called right after the array is mutated.
-            // So if `currentTurn === 'player'`, that means the player just moved and took the last stone!
-            // Wait, inside executePlayerMove(), `heaps` is mutated, then `checkGameOver()` is called *before* changing `currentTurn`.
-            // So if `currentTurn === 'player'`, player just won.
-
-            if (currentTurn === 'player') {
+            // If currentTurn executed a move, and sum is 0, they took the last chip.
+            const tookLastChip = (currentTurn === 'player');
+            const playerWins = (gameMode === 'normal') ? tookLastChip : !tookLastChip;
+            
+            if (playerWins) {
                 winnerText.textContent = "You Win!";
                 winnerText.className = 'glow-text turn-player';
-                winnerSubtext.textContent = "A brilliant display of strategy.";
+                winnerSubtext.textContent = gameMode === 'normal' 
+                    ? "A brilliant display of strategy." 
+                    : "You forced the bot into the last chip!";
                 strategyBtn.classList.remove('hidden');
             } else {
                 winnerText.textContent = "You Lose!";
                 winnerText.className = 'glow-text turn-bot';
-                winnerSubtext.textContent = "The bot predicted your every move. It's rigged anyway.";
+                winnerSubtext.textContent = gameMode === 'normal' 
+                    ? "The bot predicted your every move. It's rigged anyway."
+                    : "You were forced to take the final chip.";
                 strategyBtn.classList.remove('hidden');
             }
         }, 500);
