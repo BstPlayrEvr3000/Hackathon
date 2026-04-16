@@ -113,7 +113,13 @@
                     </div>
                     <div class="rule-item">
                         <span class="rule-num">3</span>
-                        <p>The player who removes the last chip from the board wins the game!</p>
+                        <p><strong>Normal Mode:</strong> The player who removes the last chip <em>wins</em> the game.
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-num">4</span>
+                        <p><strong>Misere Mode:</strong> The player who removes the last chip <em>loses</em> the game.
+                        </p>
                     </div>
                 </div>
                 <button id="got-it-btn" class="primary-btn">Got it!</button>
@@ -152,6 +158,8 @@
                     <p>The goal is to move so that your opponent is left with a <strong>Nim-Sum of 0</strong>. To do
                         this you can calculate the Nim-Sum of your position and figure out how many chips need to be
                         subtracted to change it to 0. If you do this every turn, victory is guaranteed!</p>
+
+                    <p>To win Misere nim you must change you strategy when their is only 1 pile greater than 1. You must make sure that you start with a nim-sum of 0 because which means that your opponent will be forced to take the last chip instead ensuring you win.</p>
                 </div>
                 <button id="close-strategy-btn" class="primary-btn">Mastered it!</button>
             </div>
