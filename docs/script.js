@@ -3,6 +3,7 @@ let heaps = [];
 let currentTurn = 'player'; // 'player' or 'bot'
 let selectedHeapIndex = -1;
 let selectedStonesCount = 0; // number of stones selected to remove
+let difficulty = 'beatable'; // 'beatable' or 'unbeatable'
 
 // DOM Elements
 const setupScreen = document.getElementById('setup-screen');
@@ -33,6 +34,10 @@ const strategyOverlay = document.getElementById('strategy-overlay');
 const closeStrategyBtn = document.getElementById('close-strategy');
 const closeStrategyPrimaryBtn = document.getElementById('close-strategy-btn');
 
+// Difficulty UI
+const beatableBtn = document.getElementById('difficulty-beatable');
+const unbeatableBtn = document.getElementById('difficulty-unbeatable');
+
 // --- Initialization & Setup ---
 startBtn.addEventListener('click', startGame);
 confirmBtn.addEventListener('click', executePlayerMove);
@@ -48,6 +53,16 @@ restartBtn.addEventListener('click', () => {
         cancelSelection();
     }, 500);
 });
+
+// Difficulty Selection Logic
+beatableBtn.addEventListener('click', () => setDifficulty('beatable'));
+unbeatableBtn.addEventListener('click', () => setDifficulty('unbeatable'));
+
+function setDifficulty(level) {
+    difficulty = level;
+    beatableBtn.classList.toggle('active', level === 'beatable');
+    unbeatableBtn.classList.toggle('active', level === 'unbeatable');
+}
 
 // Rules Modal Logic
 rulesBtn.addEventListener('click', () => {
@@ -85,7 +100,7 @@ function startGame() {
         setupError.textContent = "Please enter some numbers.";
         return;
     }
-    
+
     const parts = rawInput.split(/\s+/);
     heaps = [];
     for (let p of parts) {
@@ -96,23 +111,27 @@ function startGame() {
         }
         heaps.push(num);
     }
-    
+
     if (heaps.length === 0) {
         setupError.textContent = "Please enter at least one heap size.";
         return;
     }
-    
+
     setupError.textContent = "";
 
     // Calculate Nim-sum to determine who goes first
     const nimSum = heaps.reduce((acc, val) => acc ^ val, 0);
-    
-    // If nimSum is 0, player goes first (Bot wins essentially)
-    // If nimSum != 0, Bot goes first and wins
-    if (nimSum === 0) {
-        currentTurn = 'player';
+
+    // Determine the "advantaged" player from the current position
+    // (Nim-sum != 0 is a winning position for the first player)
+    const startPositionIsWinning = (nimSum !== 0);
+
+    if (difficulty === 'beatable') {
+        // Player gets the advantage: goes first on winning, stays second on losing
+        currentTurn = startPositionIsWinning ? 'player' : 'bot';
     } else {
-        currentTurn = 'bot';
+        // Bot gets the advantage: stays second on winning, goes first on losing
+        currentTurn = startPositionIsWinning ? 'bot' : 'player';
     }
 
     // Transition Screens
@@ -125,7 +144,7 @@ function startGame() {
         gameScreen.classList.add('active');
         updateBoard();
         updateTurnIndicator();
-        
+
         if (currentTurn === 'bot') {
             setTimeout(botMove, 1000); // Deciding pause for bot going first
         }
@@ -135,12 +154,12 @@ function startGame() {
 // --- Game Logic ---
 function updateBoard() {
     heapsContainer.innerHTML = '';
-    
+
     heaps.forEach((count, heapIndex) => {
         const heapDiv = document.createElement('div');
         heapDiv.className = 'heap';
         if (count === 0) heapDiv.style.opacity = '0.3';
-        
+
         // Heap selection logic
         heapDiv.addEventListener('click', () => {
             if (currentTurn !== 'player' || count === 0) return;
@@ -152,14 +171,14 @@ function updateBoard() {
             stone.className = 'stone';
             heapDiv.appendChild(stone);
         }
-        
+
         if (selectedHeapIndex === heapIndex) {
             heapDiv.classList.add('selected');
         }
 
         heapsContainer.appendChild(heapDiv);
     });
-    
+
     updateControls();
 }
 
@@ -197,7 +216,7 @@ if (takeAmountInput) {
 function highlightStones(heapIndex, stoneIndex) {
     const heapsNodes = heapsContainer.children;
     const stones = heapsNodes[heapIndex].children;
-    
+
     for (let i = 0; i < stones.length; i++) {
         if (i <= stoneIndex) {
             stones[i].classList.add('selected');
@@ -243,15 +262,15 @@ function updateControls() {
 
 function executePlayerMove() {
     if (selectedHeapIndex === -1 || selectedStonesCount === 0) return;
-    
+
     // Animate removal
     animateRemoval(selectedHeapIndex, selectedStonesCount, () => {
         heaps[selectedHeapIndex] -= selectedStonesCount;
         selectedHeapIndex = -1;
         selectedStonesCount = 0;
-        
+
         if (checkGameOver()) return;
-        
+
         currentTurn = 'bot';
         updateTurnIndicator();
         updateBoard();
@@ -302,14 +321,14 @@ function botMove() {
     updateBoard();
     selectionInfo.textContent = `Bot is taking ${takeAmount} stone(s) from Heap ${chosenHeap + 1}...`;
     controlsContainer.classList.remove('hidden');
-    
+
     setTimeout(() => {
         animateRemoval(chosenHeap, takeAmount, () => {
             heaps[chosenHeap] -= takeAmount;
             controlsContainer.classList.add('hidden');
-            
+
             if (checkGameOver()) return;
-            
+
             currentTurn = 'player';
             updateTurnIndicator();
             updateBoard();
@@ -336,7 +355,7 @@ function checkGameOver() {
             gameOverScreen.classList.remove('hidden');
             gameOverScreen.offsetHeight;
             gameOverScreen.classList.add('active');
-            
+
             // Last player to move wins (so the turn that just happened, which means the currentTurn variable points to the loser now)
             // Wait, actually:
             // if currentTurn just executed a move, and sum is 0, they took the last stone.
@@ -344,12 +363,12 @@ function checkGameOver() {
             // So if `currentTurn === 'player'`, that means the player just moved and took the last stone!
             // Wait, inside executePlayerMove(), `heaps` is mutated, then `checkGameOver()` is called *before* changing `currentTurn`.
             // So if `currentTurn === 'player'`, player just won.
-            
+
             if (currentTurn === 'player') {
                 winnerText.textContent = "You Win!";
                 winnerText.className = 'glow-text turn-player';
                 winnerSubtext.textContent = "A brilliant display of strategy.";
-                strategyBtn.classList.add('hidden');
+                strategyBtn.classList.remove('hidden');
             } else {
                 winnerText.textContent = "You Lose!";
                 winnerText.className = 'glow-text turn-bot';
