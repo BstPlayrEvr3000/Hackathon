@@ -175,6 +175,16 @@ input[type="text"]:focus {
     transition: all 0.3s ease;
 }
 
+.secondary-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--stone-glow);
+    filter: brightness(1.1);
+}
+
+.secondary-btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
 .game-over-controls {
     display: flex;
     gap: 1.5rem;
@@ -182,6 +192,20 @@ input[type="text"]:focus {
     margin-top: 1rem;
     flex-wrap: wrap;
     width: 100%;
+}
+
+@media (max-width: 600px) {
+    .game-over-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .primary-btn, .secondary-btn {
+        width: 100%;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
 }
 
 .hidden {
@@ -231,7 +255,7 @@ input[type="text"]:focus {
 
 .heap {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column-reverse; /* Stack from bottom to top */
     gap: 0.5rem;
     align-items: center;
     padding: 1rem;
@@ -240,10 +264,15 @@ input[type="text"]:focus {
     border: 1px solid transparent;
 }
 
-.heap.selected {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+.heap.hoverable:hover {
+    background: rgba(255,255,255,0.03);
+    border-color: var(--glass-border);
+}
+
+.heap.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    filter: grayscale(0.5);
 }
 
 .stone {
@@ -326,45 +355,64 @@ input[type="text"]:focus {
     transition: all 0.3s ease;
 }
 
+#take-amount-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
 #selection-info {
     font-size: 1.1rem;
     font-weight: 600;
 }
 
-/* Updated Button Styles */
-.setup-actions {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin: -0.15rem 0 0.35rem 0;
+.heap.selected {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
 }
 
-.inline-info-btn {
-    position: static;
-    height: 42px;
-    padding: 0 14px;
+/* Floating Rules Button */
+.icon-btn {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    height: 52px;
+    padding: 0 18px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    background: linear-gradient(135deg, rgba(59,130,246,0.28), rgba(139,92,246,0.28));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    color: var(--text-primary);
-    font-size: 0.92rem;
+
+    color: #ffffff;
+    font-size: 0.98rem;
     font-weight: 700;
+    letter-spacing: 0.01em;
+
     cursor: pointer;
-    box-shadow: 0 0 14px rgba(59, 130, 246, 0.16);
-    transition: all 0.18s ease;
-    display: inline-flex;
+    z-index: 1000;
+    box-shadow: 0 0 18px rgba(59,130,246,0.25);
+
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
-.inline-info-btn:hover {
-    transform: translateY(-1px);
-    border-color: rgba(96, 165, 250, 0.5);
-    background: rgba(59, 130, 246, 0.12);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.28);
+.icon-btn:hover {
+    transform: translateY(-1px) scale(1.03);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 26px rgba(59,130,246,0.38);
+    background: linear-gradient(135deg, rgba(59,130,246,0.38), rgba(139,92,246,0.38));
+    color: #ffffff;
+}
+
+.icon-btn:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
 }
 
 /* Modal Styling */
@@ -385,13 +433,38 @@ input[type="text"]:focus {
     transition: opacity 0.3s ease;
 }
 
+.overlay.hidden {
+    display: none !important;
+    opacity: 0;
+}
+
 .modal {
     max-width: 500px;
     width: 90%;
     max-height: 85vh;
-    padding: 3rem 2rem 2rem 2rem;
-    position: relative;
     overflow-y: auto;
+    position: relative;
+    padding: 3rem 2rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) transparent;
+}
+
+.modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 10px;
 }
 
 .close-btn {
@@ -403,6 +476,11 @@ input[type="text"]:focus {
     color: var(--text-secondary);
     font-size: 2rem;
     cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+    color: var(--danger-color);
 }
 
 .rules-content {
@@ -428,6 +506,18 @@ input[type="text"]:focus {
     align-items: center;
     justify-content: center;
     font-weight: 800;
+    font-size: 1rem;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.rule-item p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.rules-content p {
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
 }
 
 .example-box {
@@ -437,9 +527,40 @@ input[type="text"]:focus {
     padding: 1.5rem;
     margin: 1rem 0;
     font-family: 'JetBrains Mono', monospace;
+    text-align: center;
 }
 
-/* Project Attribution Box */
+.example-box strong {
+    display: block;
+    margin-bottom: 0.8rem;
+    color: var(--accent-hover);
+    font-family: 'Outfit', sans-serif;
+}
+
+.example-box code {
+    font-size: 1.1rem;
+    background: none;
+    padding: 0;
+}
+
+.example-box hr {
+    border: none;
+    border-top: 1px solid var(--glass-border);
+    margin: 0.5rem auto;
+    width: 60px;
+}
+
+.rule-item strong {
+    color: var(--accent-hover);
+}
+
+.setup-actions {
+    width: 100%;
+    display: flex;
+@@ -598,53 +42,3 @@ input[type="text"]:focus {
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
 .attribution-box {
     width: 100%;
     max-width: 720px;
@@ -455,6 +576,8 @@ input[type="text"]:focus {
 .attribution-title {
     font-size: 0.95rem;
     font-weight: 700;
+    letter-spacing: 0.01em;
+    text-transform: none;
     color: var(--text-primary);
     margin-bottom: 0.75rem;
 }
@@ -463,24 +586,28 @@ input[type="text"]:focus {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 0.45rem 1rem;
+    align-items: start;
 }
 
 .attr-role {
     color: var(--text-secondary);
     font-size: 0.98rem;
+    line-height: 1.45;
 }
 
 .attr-name {
     color: var(--text-primary);
     font-size: 0.98rem;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 @media (max-width: 640px) {
     .attribution-grid {
         grid-template-columns: 1fr;
     }
-    .glow-text {
-        font-size: 2.5rem;
+
+    .attr-name {
+        margin-bottom: 0.45rem;
     }
 }
